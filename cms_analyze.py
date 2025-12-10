@@ -1,3 +1,4 @@
+import os 
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -6,12 +7,32 @@ st.set_page_config(layout="wide", page_title="DRG Explorer")
 
 st.title("🏥 DRG Explorer Dashboard")
 
-uploaded_file = st.sidebar.file_uploader("Upload MIH-by Provider & Service CSV", type="csv")
+# uploaded_file = st.sidebar.file_uploader("Upload MIH-by Provider & Service CSV", type="csv")
 
-if not uploaded_file:
-    st.info("Upload a CSV to continue.")
-    st.stop()
-df = pd.read_csv(uploaded_file, encoding='latin1')
+# if not uploaded_file:
+#     st.info("Upload a CSV to continue.")
+#     st.stop()
+# df = pd.read_csv(uploaded_file, encoding='latin1')
+DEFAULT_FILE = "MUP_INP_RY25_P03_V10_DY23_PrvSvc.CSV"
+
+
+uploaded_file = st.sidebar.file_uploader("Upload MIH-by Provider and Service CSV", type="csv")
+
+if uploaded_file is not None:
+    data_source = uploaded_file
+else:
+    if os.path.exists(DEFAULT_FILE):
+        data_source = DEFAULT_FILE
+        st.sidebar.info("Using default CSV file (MIH-by Provider and Service 2023).")
+    else:
+        st.error("File not found. Please upload a CSV file.")
+        st.stop()
+
+@st.cache_data
+def load_data(source):
+    return pd.read_csv(source, encoding='latin1')
+
+df = load_data(data_source)
 
 # Derived columns
 df["payment_yield"] = df["Avg_Tot_Pymt_Amt"] / df["Avg_Submtd_Cvrd_Chrg"]
