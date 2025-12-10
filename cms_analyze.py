@@ -6,7 +6,7 @@ st.set_page_config(layout="wide", page_title="DRG Explorer")
 
 st.title("🏥 DRG Explorer Dashboard")
 
-uploaded_file = st.sidebar.file_uploader("Upload DRG CSV", type="csv")
+uploaded_file = st.sidebar.file_uploader("Upload MIH-by Provider & Service CSV", type="csv")
 
 if not uploaded_file:
     st.info("Upload a CSV to continue.")
